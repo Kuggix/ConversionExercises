@@ -7,56 +7,64 @@ struct MathHelper
 	{
 		//used for shorthand
 		typedef unsigned int uint;
-		std::string MapIntToHex(int numToConvert)
+		std::string BaseMapper(int numToConvert)
 		{
-			std::string hexMap = "0123456789ABCDEF";
+			std::string baseMap = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 			std::string s = "";
-			s = s + hexMap[numToConvert];
+			s += baseMap[numToConvert];
 			return s;
 		}
-		std::string ConvertToHex(int baseNum)
+
+		std::string ConvertToBase(int baseNum, int baseType)
 		{
-			int result = baseNum / 16;
-			int tempRemainder = baseNum % 16;
+			int result = baseNum / baseType;
+			int tempRemainder = baseNum % baseType;
 			//we get the hex conversion, and the easiest way to store it is by making a string of numbers.
 			std::string remainders;
-			remainders  = MapIntToHex(tempRemainder);
+			remainders = BaseMapper(tempRemainder);
 
 			while (result > 0)
-			{ 
-				remainders = remainders + MapIntToHex((result % 16));
-				result = result / 16;
+			{
+				remainders = remainders + BaseMapper((result % baseType));
+				result = result / baseType;
 			}
 			//our result is now 0, we should have all of our numbers! First, we should reverse the string however.
 			std::reverse(remainders.begin(), remainders.end());
 			return remainders;
 		}
-		std::string ConvertToOct(uint baseNum)
-		{
-			std::string remainders = "";
-			while (baseNum > 0)
-			{
-				remainders = remainders + std::to_string(baseNum % 8);
-				baseNum /= 8;
-			}
-			std::reverse(remainders.begin(), remainders.end());
-			return remainders;
-		}
 	};
 
+void printResult(std::string result)
+{
+	std::cout << result << std::endl;
+}
 int main()
 {
+	enum bases {binary = 2, oct = 8, hex = 16};
 	MathHelper helper;
-	std::cout << helper.ConvertToHex(1128) << "\n";//pass 468 
-	std::cout << helper.ConvertToHex(256) << "\n"; //pass 100
-	std::cout << helper.ConvertToHex(921) << "\n"; //pass 399
-	std::cout << helper.ConvertToHex(188) << "\n"; //pass BC
-	std::cout << helper.ConvertToHex(100) << "\n"; //pass 64
-	std::cout << helper.ConvertToHex(590) << "\n"; //pass 24E
-	std::cout << helper.ConvertToOct(1792) << "\n"; //pass 
-	std::cout << helper.ConvertToOct(4321) << "\n"; //pass
-	std::cout << helper.ConvertToOct(25) << "\n"; //pass
-	std::cout << helper.ConvertToOct(500) << "\n"; //pass
+
+	/*
+	hex test, all pass
+	*/
+	printResult(helper.ConvertToBase(1128, hex));
+	printResult(helper.ConvertToBase(256, hex));
+	printResult(helper.ConvertToBase(921, hex));
+	printResult(helper.ConvertToBase(188, hex));
+	printResult(helper.ConvertToBase(100, hex));
+	printResult(helper.ConvertToBase(590, hex));
+
+	/* 
+	oct test, all pass
+	*/
+	printResult(helper.ConvertToBase(25, oct));
+	printResult(helper.ConvertToBase(1090, oct));
+
+	/*
+	binary test, all pass
+	*/
+	printResult(helper.ConvertToBase(10, binary));
+	printResult(helper.ConvertToBase(15, binary));
+
 	std::cin.get();
     return 0;
 }
